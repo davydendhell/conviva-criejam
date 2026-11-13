@@ -15,28 +15,38 @@
     .notice { margin: 0 0 1rem; padding: 1rem; border: 1px solid #d5dde9; border-radius: 12px; background: white; }
     h1 { margin: 0 0 .4rem; font-size: clamp(1.25rem, 4vw, 1.7rem); }
     p { margin: .25rem 0; }
-    a { color: #163b6b; }
-    iframe { display: block; width: 100%; min-height: 80vh; border: 0; border-radius: 12px; background: white; }
-    @media (max-width: 600px) { body { padding-inline: .5rem; } iframe { min-height: 85vh; } }
+    iframe { display: block; width: 100%; min-height: 92vh; border: 0; border-radius: 12px; background: white; }
+    @media (max-width: 600px) { body { padding-inline: .5rem; } iframe { min-height: 96vh; } }
   </style>
 </head>
 <body>
   <main>
     <section class="notice">
       <h1>Conviva Simulador</h1>
-      <p>Este app pode ser instalado e usado offline depois de ser aberto uma vez com internet.</p>
-      <p id="status" role="status">Preparando suporte offline…</p>
-      <p id="missing" hidden>Para carregar o simulador, adicione ao repositório o arquivo original com o nome <strong>Conviva Simulador.html</strong>, na mesma pasta deste index.</p>
+      <p>Protótipo responsivo instalável. O uso offline fica disponível depois do primeiro acesso com internet.</p>
+      <p id="status" role="status">Carregando o simulador…</p>
     </section>
-    <iframe title="Simulador Conviva" src="./Conviva%20Simulador.html"></iframe>
+    <iframe id="simulador" title="Simulador Conviva"></iframe>
   </main>
   <script>
+    const simulatorPath = './Conviva%20Simulador.html';
+    fetch(simulatorPath).then(response => {
+      if (!response.ok) throw new Error('Documento do simulador não encontrado');
+      return response.text();
+    }).then(html => {
+      const base = `<base href="${new URL('./', location.href).href}">`;
+      const enhancement = '<script src="./prototype-enhancements.js"><\\/script>';
+      let source = html.replace(/<head([^>]*)>/i, match => `${match}${base}`);
+      source = source.replace(/<\\/body>/i, `${enhancement}</body>`);
+      document.getElementById('simulador').srcdoc = source;
+      document.getElementById('status').textContent = 'Simulador carregado. Use os controles “Preencher automaticamente” para experimentar.';
+    }).catch(() => {
+      document.getElementById('status').textContent = 'Não foi possível carregar o HTML do simulador. Confira se “Conviva Simulador.html” está na raiz do repositório.';
+    });
     if ('serviceWorker' in navigator && location.protocol === 'https:') {
-      navigator.serviceWorker.register('./sw.js')
-        .then(() => { document.getElementById('status').textContent = 'Suporte offline ativado. Abra o app online uma vez para armazenar o simulador.'; })
-        .catch(() => { document.getElementById('status').textContent = 'Não foi possível ativar o suporte offline neste navegador.'; });
-    } else {
-      document.getElementById('status').textContent = 'O modo offline precisa de HTTPS e de um navegador compatível.';
+      navigator.serviceWorker.register('./sw.js').catch(() => {
+        document.getElementById('status').textContent += ' O suporte offline não pôde ser ativado.';
+      });
     }
   </script>
 </body>
