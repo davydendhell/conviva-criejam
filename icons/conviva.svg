@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#163b6b"/>
+  <circle cx="256" cy="256" r="190" fill="none" stroke="#e2bc5c" stroke-width="10" stroke-dasharray="12 14"/>
+  <circle cx="256" cy="256" r="160" fill="#fff"/>
+  <path d="M190 292v-64l52-43 52 43v64m0 0v-48l38-29 38 29v48m-198 0h236" fill="none" stroke="#163b6b" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="256" y="170" text-anchor="middle" fill="#163b6b" font-family="Arial,sans-serif" font-size="42" font-weight="700">CONVIVA</text>
+</svg>

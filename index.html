@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#163b6b">
+  <meta name="description" content="Conviva — simulador de caminhos para conflitos de condomínio.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/conviva.svg" type="image/svg+xml">
+  <title>Conviva Simulador</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); background: #f4f6fa; color: #0f2440; font: 16px/1.5 system-ui, sans-serif; }
+    main { width: min(100%, 1100px); margin: 0 auto; }
+    .notice { margin: 0 0 1rem; padding: 1rem; border: 1px solid #d5dde9; border-radius: 12px; background: white; }
+    h1 { margin: 0 0 .4rem; font-size: clamp(1.25rem, 4vw, 1.7rem); }
+    p { margin: .25rem 0; }
+    a { color: #163b6b; }
+    iframe { display: block; width: 100%; min-height: 80vh; border: 0; border-radius: 12px; background: white; }
+    @media (max-width: 600px) { body { padding-inline: .5rem; } iframe { min-height: 85vh; } }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="notice">
+      <h1>Conviva Simulador</h1>
+      <p>Este app pode ser instalado e usado offline depois de ser aberto uma vez com internet.</p>
+      <p id="status" role="status">Preparando suporte offline…</p>
+      <p id="missing" hidden>Para carregar o simulador, adicione ao repositório o arquivo original com o nome <strong>Conviva Simulador.html</strong>, na mesma pasta deste index.</p>
+    </section>
+    <iframe title="Simulador Conviva" src="./Conviva%20Simulador.html"></iframe>
+  </main>
+  <script>
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => { document.getElementById('status').textContent = 'Suporte offline ativado. Abra o app online uma vez para armazenar o simulador.'; })
+        .catch(() => { document.getElementById('status').textContent = 'Não foi possível ativar o suporte offline neste navegador.'; });
+    } else {
+      document.getElementById('status').textContent = 'O modo offline precisa de HTTPS e de um navegador compatível.';
+    }
+  </script>
+</body>
+</html>

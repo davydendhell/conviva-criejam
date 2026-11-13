@@ -1,0 +1,16 @@
+{
+  "id": "conviva-simulador",
+  "name": "Conviva Simulador",
+  "short_name": "Conviva",
+  "description": "Simulador de caminhos para conflitos de condomínio.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6fa",
+  "theme_color": "#163b6b",
+  "icons": [
+    { "src": "./icons/conviva.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
