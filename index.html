@@ -3,50 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#163b6b">
-  <meta name="description" content="Conviva — simulador de caminhos para conflitos de condomínio.">
+  <meta name="theme-color" content="#183b3a">
+  <meta name="description" content="Conviva — apoio à convivência e à mediação em condomínios.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icons/conviva.svg" type="image/svg+xml">
-  <title>Conviva Simulador</title>
+  <title>Conviva</title>
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); background: #f4f6fa; color: #0f2440; font: 16px/1.5 system-ui, sans-serif; }
+    body { margin: 0; min-height: 100vh; padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); background: #f5f3ed; color: #233636; font: 16px/1.5 system-ui, -apple-system, sans-serif; }
     main { width: min(100%, 1100px); margin: 0 auto; }
-    .notice { margin: 0 0 1rem; padding: 1rem; border: 1px solid #d5dde9; border-radius: 12px; background: white; }
-    h1 { margin: 0 0 .4rem; font-size: clamp(1.25rem, 4vw, 1.7rem); }
-    p { margin: .25rem 0; }
-    iframe { display: block; width: 100%; min-height: 92vh; border: 0; border-radius: 12px; background: white; }
-    @media (max-width: 600px) { body { padding-inline: .5rem; } iframe { min-height: 96vh; } }
+    .offline-note { display: flex; gap: .75rem; align-items: flex-start; margin: 0 auto .8rem; padding: .8rem 1rem; border-left: 3px solid #477c68; background: #e8eee8; color: #233636; font-size: .92rem; }
+    .offline-note strong { display: block; }
+    #status { color: #52635c; font-size: .84rem; margin-top: .2rem; }
+    iframe { display: block; width: 100%; min-height: 90vh; border: 0; border-radius: 8px; background: #f5f3ed; }
+    @media (max-width: 600px) { body { padding-inline: .5rem; } iframe { min-height: 94vh; } }
   </style>
 </head>
 <body>
   <main>
-    <section class="notice">
-      <h1>Conviva Simulador</h1>
-      <p>Protótipo responsivo instalável. Abra uma vez com internet para habilitar o uso offline.</p>
-      <p id="status" role="status">Carregando…</p>
-    </section>
-    <iframe id="simulador" title="Simulador Conviva"></iframe>
+    <aside class="offline-note" aria-label="Informação sobre uso offline">
+      <span aria-hidden="true">●</span>
+      <div><strong>Use sem internet</strong>Abra o Conviva com conexão uma vez. Depois, esta versão pode funcionar offline neste aparelho.<div id="status" role="status">Carregando o aplicativo…</div></div>
+    </aside>
+    <iframe id="simulador" title="Conviva — mediação e convivência em condomínios"></iframe>
   </main>
   <script>
     const simulatorPath = './Conviva%20Simulador.html';
+    const status = document.getElementById('status');
     fetch(simulatorPath).then(response => {
       if (!response.ok) throw new Error('Documento não encontrado');
       return response.text();
     }).then(html => {
       const base = `<base href="${new URL('./', location.href).href}">`;
-      let source = html.replace(/<head([^>]*)>/i, match => `${match}${base}`);
-      const enhancement = '<script src="./prototype-enhancements.js"></scr' + 'ipt>';
-      source = source.replace(/<\/body>/i, enhancement + '</body>');
+      let source = html.replace(/<head([^>]*)>/i, match => `${match}${base}<link rel="stylesheet" href="./design.css">`);
+      const addOns = '<script src="./report-mode.js"></scr' + 'ipt>';
+      source = source.replace(/<\/body>/i, addOns + '</body>');
       document.getElementById('simulador').srcdoc = source;
-      document.getElementById('status').textContent = 'Demonstração carregada com dados fictícios. Explore as etapas pelo menu ou pelos botões de demonstração.';
+      status.textContent = 'Aplicativo pronto. Recursos externos, como fontes ou serviços conectados, podem exigir internet.';
     }).catch(() => {
-      document.getElementById('status').textContent = 'Falha ao carregar o simulador. Confira se “Conviva Simulador.html” está na raiz do repositório.';
+      status.textContent = 'Não foi possível carregar o documento. Abra novamente com internet para armazenar o app.';
     });
     if ('serviceWorker' in navigator && location.protocol === 'https:') {
-      navigator.serviceWorker.register('./sw.js').catch(() => {
-        document.getElementById('status').textContent += ' Offline indisponível neste momento.';
-      });
+      navigator.serviceWorker.register('./sw.js').then(registration => {
+        if (registration.active) status.textContent = 'Arquivos principais em cache neste aparelho; abra o app online ao menos uma vez para uso offline.';
+      }).catch(() => { status.textContent = 'O cache offline não foi ativado neste navegador.'; });
     }
   </script>
 </body>
