@@ -23,29 +23,29 @@
   <main>
     <section class="notice">
       <h1>Conviva Simulador</h1>
-      <p>Protótipo responsivo instalável. O uso offline fica disponível depois do primeiro acesso com internet.</p>
-      <p id="status" role="status">Carregando o simulador…</p>
+      <p>Protótipo responsivo instalável. Abra uma vez com internet para habilitar o uso offline.</p>
+      <p id="status" role="status">Carregando…</p>
     </section>
     <iframe id="simulador" title="Simulador Conviva"></iframe>
   </main>
   <script>
     const simulatorPath = './Conviva%20Simulador.html';
     fetch(simulatorPath).then(response => {
-      if (!response.ok) throw new Error('Documento do simulador não encontrado');
+      if (!response.ok) throw new Error('Documento não encontrado');
       return response.text();
     }).then(html => {
       const base = `<base href="${new URL('./', location.href).href}">`;
-      const enhancement = '<script src="./prototype-enhancements.js"><\\/script>';
       let source = html.replace(/<head([^>]*)>/i, match => `${match}${base}`);
-      source = source.replace(/<\\/body>/i, `${enhancement}</body>`);
+      const enhancement = '<script src="./prototype-enhancements.js"></scr' + 'ipt>';
+      source = source.replace(/<\/body>/i, enhancement + '</body>');
       document.getElementById('simulador').srcdoc = source;
-      document.getElementById('status').textContent = 'Simulador carregado. Use os controles “Preencher automaticamente” para experimentar.';
+      document.getElementById('status').textContent = 'Demonstração carregada com dados fictícios. Explore as etapas pelo menu ou pelos botões de demonstração.';
     }).catch(() => {
-      document.getElementById('status').textContent = 'Não foi possível carregar o HTML do simulador. Confira se “Conviva Simulador.html” está na raiz do repositório.';
+      document.getElementById('status').textContent = 'Falha ao carregar o simulador. Confira se “Conviva Simulador.html” está na raiz do repositório.';
     });
     if ('serviceWorker' in navigator && location.protocol === 'https:') {
       navigator.serviceWorker.register('./sw.js').catch(() => {
-        document.getElementById('status').textContent += ' O suporte offline não pôde ser ativado.';
+        document.getElementById('status').textContent += ' Offline indisponível neste momento.';
       });
     }
   </script>
